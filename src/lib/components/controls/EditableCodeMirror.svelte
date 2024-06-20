@@ -12,6 +12,12 @@
   import { EditorView, keymap } from '@codemirror/view'
   import { EditorState } from '@codemirror/state'
   import type { ChangeEventHandler } from 'svelte/elements'
+  import {
+    CompletionContext,
+    autocompletion,
+    completionStatus,
+    type CompletionResult
+  } from '@codemirror/autocomplete'
 
   const debug = createDebug('jsoneditor:EditableCodeMirror')
 
@@ -64,6 +70,10 @@
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       codeMirrorView.contentDOM.cancel = handleCancel
+
+      // set the initial classes
+      const classArray = valueClass.split(' ')
+      codeMirrorView.contentDOM.classList.add('jse-editable-div', ...classArray)
     }
   })
 
@@ -84,8 +94,13 @@
     }
 
     if (combo === 'Enter' || combo === 'Tab') {
-      closed = true
-      onChange(codeMirrorView.state.doc.toString(), UpdateSelectionAfterChange.nextInside)
+      const status = completionStatus(codeMirrorView.state)
+
+      // only close the editable div when the user presses Enter or Tab and there is no autocompletion active
+      if (status === null) {
+        closed = true
+        onChange(codeMirrorView.state.doc.toString(), UpdateSelectionAfterChange.nextInside)
+      }
     }
 
     if (combo === 'Ctrl+F') {
@@ -135,6 +150,16 @@
           if (update.docChanged) {
             const newValue = update.state.doc.toString()
             valueClass = onValueClass(newValue)
+            const classArray = valueClass.split(' ')
+
+            // remove all jse- classes
+            codeMirrorView.contentDOM.classList.forEach((className) => {
+              if (className.startsWith('jse-')) {
+                codeMirrorView.contentDOM.classList.remove(className)
+              }
+            })
+
+            codeMirrorView.contentDOM.classList.add('jse-editable-div', ...classArray)
           }
         }),
         EditorView.domEventHandlers({
@@ -146,7 +171,8 @@
           blur: handleBlur,
           paste: handleValuePaste
         }),
-        EditorView.lineWrapping
+        EditorView.lineWrapping,
+        autocompletion({ override: [myCompletions] })
       ]
     })
 
@@ -176,8 +202,27 @@
   onDestroy(() => {
     codeMirrorView.destroy()
   })
+
+  function myCompletions(context: CompletionContext): CompletionResult | null {
+    let before = context.matchBefore(/\S+/)
+
+    const completions = [
+      { label: '{{stub.data.firstname}}', type: 'variable' },
+      { label: '{{stub.stubref}}', type: 'variable' },
+      { label: '{{template.data.ai.prompts.welcome}}', type: 'variable' }
+    ]
+
+    // If completion wasn't explicitly started and there
+    // is no word before the cursor, don't open completions.
+    if (!context.explicit && !before) return null
+    return {
+      from: before ? before.from : context.pos,
+      options: completions,
+      validFor: /^.*$/
+    }
+  }
 </script>
 
-<div class={classnames('jse-editable-cm', valueClass)} bind:this={codeMirrorRef} />
+<div class="jse-editable-cm" bind:this={codeMirrorRef} />
 
 <style src="./EditableCodeMirror.scss"></style>
