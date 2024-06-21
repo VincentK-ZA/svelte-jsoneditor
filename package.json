@@ -57,6 +57,7 @@
     "release:version": "standard-version",
     "release:build": "npm run build",
     "release:push": "git push && git push --tag",
+    "release:publish": "npm run publish package/",
     "release-dry-run": "standard-version --dry-run"
   },
   "dependencies": {
