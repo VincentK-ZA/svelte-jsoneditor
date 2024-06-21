@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.23.9](https://github.com/VincentK-ZA/svelte-jsoneditor/compare/v0.23.7...v0.23.9) (2024-06-21)
+
+
+### Features
+
+* editable codemirror ([6e406e7](https://github.com/VincentK-ZA/svelte-jsoneditor/commit/6e406e70bba4b9273c0462436d580814dfe622a0))
+
 ### [0.23.7](https://github.com/josdejong/svelte-jsoneditor/compare/v0.23.6...v0.23.7) (2024-06-06)
 
 

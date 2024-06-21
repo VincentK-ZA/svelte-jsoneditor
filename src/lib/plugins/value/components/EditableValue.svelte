@@ -18,6 +18,7 @@
   } from '$lib/types.js'
   import { UpdateSelectionAfterChange } from '$lib/types.js'
   import { isEqual } from 'lodash-es'
+  import type { ComponentType } from 'svelte'
 
   export let path: JSONPath
   export let value: unknown
@@ -30,6 +31,7 @@
   export let onFind: OnFind
   export let focus: () => void
   export let findNextInside: FindNextInside
+  export let editableComponent: ComponentType = EditableDiv
 
   function convert(value: string): unknown {
     return enforceString ? value : stringConvert(value, parser)
@@ -94,7 +96,8 @@
   }
 </script>
 
-<EditableDiv
+<svelte:component
+  this={editableComponent}
   value={normalization.escapeValue(value)}
   onChange={handleChangeValue}
   onCancel={handleCancelChange}

@@ -1,5 +1,6 @@
 <script lang="ts">
   import {
+    EditableValue,
     EnumValue,
     JSONEditor,
     renderValue,
@@ -8,6 +9,15 @@
   } from 'svelte-jsoneditor'
   import ReadonlyPassword from '../../components/ReadonlyPassword.svelte'
   import { EvaluatorAction } from '../../components/EvaluatorAction'
+  import EditableCodeMirror from 'svelte-jsoneditor/components/controls/EditableCodeMirror.svelte'
+  import { EditorState } from '@codemirror/state'
+  import { EditorView } from '@codemirror/view'
+  import { onMount } from 'svelte'
+  import {
+    autocompletion,
+    type CompletionContext,
+    type CompletionResult
+  } from '@codemirror/autocomplete'
 
   let content = {
     text: undefined, // can be used to pass a stringified JSON document instead
@@ -15,7 +25,8 @@
       username: 'John',
       password: 'secret...',
       gender: 'male',
-      evaluate: '2 + 3'
+      evaluate: '2 + 3',
+      codemirror: 'test'
     }
   }
 
@@ -27,7 +38,22 @@
   ]
 
   function onRenderValue(props: RenderValueProps): RenderValueComponentDescription[] {
-    const { path, value, readOnly, parser, isEditing, selection, onSelect, onPatch } = props
+    const {
+      path,
+      value,
+      readOnly,
+      enforceString,
+      isEditing,
+      parser,
+      normalization,
+      selection,
+      onPatch,
+      onPasteJson,
+      onSelect,
+      onFind,
+      findNextInside,
+      focus
+    } = props
 
     const key = props.path[props.path.length - 1]
     if (key === 'password' && !isEditing) {
@@ -75,8 +101,97 @@
       ]
     }
 
+    if (key === 'codemirror' && isEditing) {
+      return [
+        {
+          component: EditableValue,
+          props: {
+            path,
+            value,
+            enforceString,
+            parser,
+            normalization,
+            onPatch,
+            onPasteJson,
+            onSelect,
+            onFind,
+            findNextInside,
+            focus,
+            editableComponent: EditableCodeMirror
+          }
+        }
+      ]
+    }
+
     // fallback on the default render components
     return renderValue(props)
+  }
+
+  let codeMirrorRef: HTMLDivElement
+  let codeMirrorView: EditorView
+
+  onMount(() => {
+    try {
+      codeMirrorView = createCodeMirrorView({
+        target: codeMirrorRef,
+        initialText: 'ola'
+      })
+    } catch (err) {
+      // TODO: report error to the user
+      console.error(err)
+    }
+  })
+
+  function myCompletions(context: CompletionContext): CompletionResult | null {
+    let before = context.matchBefore(/\w+/)
+
+    const completions = [
+      { label: 'panic', type: 'keyword' },
+      { label: 'park', type: 'constant', info: 'Test completion' },
+      { label: 'password', type: 'variable' }
+    ]
+
+    // If completion wasn't explicitly started and there
+    // is no word before the cursor, don't open completions.
+    if (!context.explicit && !before) return null
+    return {
+      from: before ? before.from : context.pos,
+      options: completions,
+      validFor: /^\w*$/
+    }
+  }
+
+  function createCodeMirrorView({
+    target,
+    initialText
+  }: {
+    target: HTMLDivElement
+    initialText: string
+  }): EditorView {
+    const state = EditorState.create({
+      doc: initialText,
+      extensions: [
+        EditorView.updateListener.of((update) => {
+          if (update.docChanged) {
+            console.log('update.state.doc.toString()', update.state.doc.toString())
+          }
+        }),
+        autocompletion({ override: [myCompletions] })
+      ]
+    })
+
+    codeMirrorView = new EditorView({
+      state,
+      parent: target
+    })
+
+    codeMirrorView.contentDOM.addEventListener('mousedown', (event) => {
+      // stop propagation to prevent selecting the whole line
+      console.log('mousedown std')
+      event.stopPropagation()
+    })
+
+    return codeMirrorView
   }
 </script>
 
@@ -85,6 +200,8 @@
 </svelte:head>
 
 <h1>Custom value renderer (password, enum, action)</h1>
+
+<div bind:this={codeMirrorRef} />
 
 <p>
   Provide a custom <code>onRenderValue</code> method, which demonstrates three things:

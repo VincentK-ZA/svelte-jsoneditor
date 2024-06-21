@@ -1,0 +1,17 @@
+.jse-editable-cm :global {
+  @import './EditableDiv';
+
+  :global(.cm-content) {
+    padding: 0;
+  }
+
+  :global(.cm-scroller) {
+    font-family: $font-family-mono;
+    font-size: $font-size-mono;
+    line-height: $line-height;
+  }
+
+  :global(.cm-line) {
+    padding: 0;
+  }
+}
