@@ -9,7 +9,6 @@
   } from 'svelte-jsoneditor'
   import ReadonlyPassword from '../../components/ReadonlyPassword.svelte'
   import { EvaluatorAction } from '../../components/EvaluatorAction'
-  import EditableDiv from 'svelte-jsoneditor/components/controls/EditableDiv.svelte'
   import EditableCodeMirror from 'svelte-jsoneditor/components/controls/EditableCodeMirror.svelte'
   import { EditorState } from '@codemirror/state'
   import { EditorView } from '@codemirror/view'
@@ -130,7 +129,6 @@
 
   let codeMirrorRef: HTMLDivElement
   let codeMirrorView: EditorView
-  let editorState: EditorState
 
   onMount(() => {
     try {
@@ -174,8 +172,6 @@
       doc: initialText,
       extensions: [
         EditorView.updateListener.of((update) => {
-          editorState = update.state
-
           if (update.docChanged) {
             console.log('update.state.doc.toString()', update.state.doc.toString())
           }

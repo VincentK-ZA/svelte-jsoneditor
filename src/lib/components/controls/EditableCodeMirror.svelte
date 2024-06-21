@@ -2,16 +2,13 @@
 
 <script lang="ts">
   import { onDestroy, onMount } from 'svelte'
-  import { addNewLineSuffix, removeNewLineSuffix, setCursorToEnd } from '$lib/utils/domUtils.js'
   import { keyComboFromEvent } from '$lib/utils/keyBindings.js'
   import { createDebug } from '$lib/utils/debug.js'
   import { noop } from 'lodash-es'
   import type { OnFind, OnPaste } from '$lib/types'
   import { UpdateSelectionAfterChange } from '$lib/types'
-  import { classnames } from '$lib/utils/cssUtils.js'
-  import { EditorView, keymap } from '@codemirror/view'
+  import { EditorView } from '@codemirror/view'
   import { EditorState } from '@codemirror/state'
-  import type { ChangeEventHandler } from 'svelte/elements'
   import {
     CompletionContext,
     autocompletion,
@@ -22,7 +19,6 @@
   const debug = createDebug('jsoneditor:EditableCodeMirror')
 
   export let value: string
-  export let shortText = false
   export let onChange: (newValue: string, updateSelection: UpdateSelectionAfterChange) => void
   export let onCancel: () => void
   export let onFind: OnFind

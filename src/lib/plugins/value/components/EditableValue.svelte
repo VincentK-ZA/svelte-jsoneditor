@@ -18,7 +18,7 @@
   } from '$lib/types.js'
   import { UpdateSelectionAfterChange } from '$lib/types.js'
   import { isEqual } from 'lodash-es'
-  import type { ComponentType, ComponentProps } from 'svelte'
+  import type { ComponentType } from 'svelte'
 
   export let path: JSONPath
   export let value: unknown
