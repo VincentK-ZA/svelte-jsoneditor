@@ -1,12 +1,8 @@
 {
-  "name": "svelte-jsoneditor",
-  "description": "A web-based tool to view, edit, format, transform, and validate JSON",
-  "version": "0.23.7",
+  "name": "@stubber/svelte-jsoneditor",
+  "description": "A fork of svelte-jsoneditor",
+  "version": "0.23.8",
   "homepage": "https://github.com/josdejong/svelte-jsoneditor",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/josdejong/svelte-jsoneditor.git"
-  },
   "type": "module",
   "svelte": "./index.js",
   "module": "./index.js",
@@ -35,7 +31,7 @@
   "scripts": {
     "dev": "vite dev",
     "preview": "svelte-kit preview",
-    "build": "npm run build:svelte && npm run build:vanilla",
+    "build": "npm run build:svelte",
     "build:watch": "npm run build -- --watch",
     "build:svelte": "npm-run-all build:svelte:**",
     "build:svelte:clean": "del-cli package",
@@ -43,15 +39,6 @@
     "build:svelte:package": "svelte-package -o package",
     "build:svelte:copy:files": "cpy README.md CHANGELOG.md LICENSE.md SECURITY.md package",
     "build:svelte:package-json": "node tools/createSveltePackageJson.js",
-    "build:vanilla": "npm-run-all build:vanilla:**",
-    "build:vanilla:clean": "del-cli package-vanilla",
-    "build:vanilla:library": "rollup --config rollup.config.vanilla-library.js",
-    "build:vanilla:bundle": "rollup --config rollup.config.vanilla-bundle.js",
-    "build:vanilla:types": "rollup --config rollup.config.vanilla-types.js",
-    "build:vanilla:copy:files": "cpy CHANGELOG.md LICENSE.md SECURITY.md package-vanilla",
-    "build:vanilla:copy:readme": "cpy --rename README.md README-VANILLA.md package-vanilla",
-    "build:vanilla:copy:themes": "cpy --flat src/lib/themes package-vanilla/themes",
-    "build:vanilla:package-json": "node tools/createVanillaPackageJson.js",
     "build-and-test": "npm run test-ci && npm run check && npm run lint && npm run build",
     "test": "vitest",
     "test-ci": "vitest run",
@@ -70,8 +57,6 @@
     "release:version": "standard-version",
     "release:build": "npm run build",
     "release:push": "git push && git push --tag",
-    "release:publish:svelte-jsoneditor": "npm publish package/",
-    "release:publish:vanilla-jsoneditor": "npm publish package-vanilla/",
     "release-dry-run": "standard-version --dry-run"
   },
   "dependencies": {
