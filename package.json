@@ -1,7 +1,7 @@
 {
   "name": "@stubber/svelte-jsoneditor",
   "description": "A fork of svelte-jsoneditor",
-  "version": "0.23.11",
+  "version": "0.23.12",
   "homepage": "https://github.com/josdejong/svelte-jsoneditor",
   "type": "module",
   "svelte": "./index.js",
