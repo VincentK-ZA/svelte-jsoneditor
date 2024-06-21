@@ -55,6 +55,12 @@ export { isEqualParser } from './utils/jsonUtils.js'
 // path
 export { parseJSONPath, stringifyJSONPath } from './utils/pathUtils.js'
 
+// keyBindings
+export * from './utils/keyBindings.js'
+
+// debug
+export { createDebug } from './utils/debug.js'
+
 // actions
 export { resizeObserver } from './actions/resizeObserver.js'
 export { onEscape } from './actions/onEscape.js'
