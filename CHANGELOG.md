@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.23.10](https://github.com/VincentK-ZA/svelte-jsoneditor/compare/v0.23.7...v0.23.10) (2024-06-21)
+
+
+### Bug Fixes
+
+* gh action publishing the wrong directory ([dfc4914](https://github.com/VincentK-ZA/svelte-jsoneditor/commit/dfc4914b282256fa87a5669f974be711056a8d1b))
+
 ### [0.23.9](https://github.com/VincentK-ZA/svelte-jsoneditor/compare/v0.23.7...v0.23.9) (2024-06-21)
 
 
