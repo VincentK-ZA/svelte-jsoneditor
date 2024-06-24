@@ -6,6 +6,7 @@
   import { isObjectOrArray, stringConvert } from '$lib/utils/typeUtils.js'
   import { createValueSelection, getFocusPath } from '$lib/logic/selection.js'
   import { getValueClass } from '$lib/plugins/value/components/utils/getValueClass.js'
+  import type { ComponentType } from 'svelte'
   import EditableDiv from '../../../components/controls/EditableDiv.svelte'
   import type {
     FindNextInside,
@@ -30,6 +31,7 @@
   export let onFind: OnFind
   export let focus: () => void
   export let findNextInside: FindNextInside
+  export let editableComponent: ComponentType = EditableDiv
 
   function convert(value: string): unknown {
     return enforceString ? value : stringConvert(value, parser)
@@ -94,7 +96,8 @@
   }
 </script>
 
-<EditableDiv
+<svelte:component
+  this={editableComponent}
   value={normalization.escapeValue(value)}
   onChange={handleChangeValue}
   onCancel={handleCancelChange}
