@@ -1,5 +1,6 @@
 <script lang="ts">
   import {
+    EditableValue,
     EnumValue,
     JSONEditor,
     renderValue,
@@ -8,6 +9,7 @@
   } from 'svelte-jsoneditor'
   import ReadonlyPassword from '../../components/ReadonlyPassword.svelte'
   import { EvaluatorAction } from '../../components/EvaluatorAction'
+  import EditableCodeMirror from '../../components/EditableCodeMirror.svelte'
 
   let content = {
     text: undefined, // can be used to pass a stringified JSON document instead
@@ -15,7 +17,8 @@
       username: 'John',
       password: 'secret...',
       gender: 'male',
-      evaluate: '2 + 3'
+      evaluate: '2 + 3',
+      editableValue: 'This is an editable value'
     }
   }
 
@@ -27,7 +30,22 @@
   ]
 
   function onRenderValue(props: RenderValueProps): RenderValueComponentDescription[] {
-    const { path, value, readOnly, parser, isEditing, selection, onSelect, onPatch } = props
+    const {
+      path,
+      value,
+      readOnly,
+      enforceString,
+      isEditing,
+      parser,
+      normalization,
+      selection,
+      onPatch,
+      onPasteJson,
+      onSelect,
+      onFind,
+      findNextInside,
+      focus
+    } = props
 
     const key = props.path[props.path.length - 1]
     if (key === 'password' && !isEditing) {
@@ -70,6 +88,28 @@
             path,
             readOnly,
             onSelect
+          }
+        }
+      ]
+    }
+
+    if (key == 'editableValue' && isEditing) {
+      return [
+        {
+          component: EditableValue,
+          props: {
+            path,
+            value,
+            enforceString,
+            parser,
+            normalization,
+            onPatch,
+            onPasteJson,
+            onSelect,
+            onFind,
+            findNextInside,
+            focus,
+            editableComponent: EditableCodeMirror
           }
         }
       ]
